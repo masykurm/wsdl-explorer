@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions name="OMA"
+             targetNamespace="http://omabrowser.org/omabrowser.wsdl"
+	     xmlns="http://schemas.xmlsoap.org/wsdl/"
+	     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	     xmlns:tns="http://omabrowser.org/omabrowser.wsdl"
+	     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	     xmlns:xsd1="http://omabrowser.org/schema">
+
+  <!-- Types definitions -->
+
+  <types>
+       <schema xmlns="http://www.w3.org/2001/XMLSchema"
+       targetNamespace="http://omabrowser.org/schema"
+       xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+       xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"
+       schemaLocation="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+    <xsd:element name="ID" type="xsd:string"/>
+
+    <xsd:complexType name="ArrayOfString">
+		<xsd:sequence> 
+			<xsd:element name="return" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence> 
+    </xsd:complexType>
+
+    <xsd:complexType name="ArrayOfArrayOfString">
+ 		<xsd:sequence> 
+			<xsd:element name="return" type="xsd1:ArrayOfString" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="IDType">
+	    <xsd:sequence>
+			<xsd:element name="TypeNr" type="xsd:integer"/>
+			<xsd:element name="TypeName" type="xsd:string"/>
+  		</xsd:sequence>
+	</xsd:complexType>
+
+    <xsd:complexType name="ListOfIDTypes">
+		<xsd:sequence> 
+			<xsd:element name="return" type="xsd1:IDType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Species">
+		<xsd:sequence>
+			<xsd:element name="SpeciesCode" type="xsd:string"/>
+			<xsd:element name="TaxonId" type="xsd:integer"/>
+  		</xsd:sequence>
+	</xsd:complexType>
+    
+   <xsd:complexType name="ListOfSpecies">
+		<xsd:sequence> 
+			<xsd:element name="return" type="xsd1:Species" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>  
+	</xsd:complexType>
+
+	<xsd:complexType name="OrthologRelation">
+		<xsd:sequence>
+			<xsd:element name="ID1" type="xsd:string"/>
+			<xsd:element name="ID2" type="xsd:string"/>
+			<xsd:element name="Type" type="xsd:string"/>
+			<xsd:element name="OMAGroup" type="xsd:integer"/>
+  		</xsd:sequence>
+	</xsd:complexType>
+
+    <xsd:complexType name="ListOfOrthologRelations">
+ 		<xsd:sequence> 
+			<xsd:element name="return" type="xsd1:OrthologRelation" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>  
+    </xsd:complexType>
+
+
+
+    </schema>
+  </types> 
+
+  <!-- Messages: Input and return type signatures for all functions -->
+            
+  <!--  ListOrthologs: (entry:string) -> (Orthologs:array(Ortholog)) -->
+  <message name="ListOrthologs">
+    <part name="EntryID" type="xsd:string"/>
+  </message>
+
+  <message name="ListOrthologsResponse">
+    <part name="IDs"  type="xsd1:ArrayOfString"/>
+  </message>
+
+  <!--  MatrixName: () -> (name,NumSpecies,NumGroups) -->
+  <message name="GetMatrixInfo"/>
+
+  <message name="GetMatrixInfoResponse">
+    <part name="Name"  type="xsd:string"/>
+    <part name="NumSpecies"  type="xsd:integer"/>
+    <part name="NumGroups"  type="xsd:integer"/>
+  </message>
+
+  <!--  TestOrthology: (entry1:string, entry2:string) -> (orthotype:string) -->
+  <message name="TestOrthology">
+    <part name="EntryID1"  type="xsd:string"/>
+    <part name="EntryID2"  type="xsd:string"/>
+  </message>
+
+  <message name="TestOrthologyResponse">
+    <part name="OrthoType"     type="xsd:string"/>
+  </message>
+
+  <!-- GetEntry: (entry:string) -> (IDs,sequence,organism,OMAGroup) -->
+  <message name="GetEntry">
+    <part name="EntryID" type="xsd:string"/>
+  </message>
+
+  <message name="GetEntryResponse">
+    <part name="IDs"     type="xsd1:ArrayOfString"/>
+    <part name="Sequence"   type="xsd:string"/>
+    <part name="Organism"   type="xsd:string"/>
+    <part name="OMAGroup"   type="xsd:integer"/>
+    <part name="Chromosome"   type="xsd:string"/>
+    <part name="Locus"    type="xsd:string"/>
+  </message>
+
+  <!-- IdentifySequence: (sequence:string) -> (IDs:array(string)) -->
+  <message name="IdentifySequence">
+    <part name="Sequence"            type="xsd:string"/>
+  </message>
+
+  <message name="IdentifySequenceResponse">
+    <part name="IDs"     type="xsd1:ArrayOfString"/>
+  </message>
+
+  <!-- GetOMAGroup: (GroupNr:integer) -> (IDs:array(string)) -->
+  <message name="GetOMAGroup">
+    <part name="GroupNr" type="xsd:integer"/>
+  </message>
+
+  <message name="GetOMAGroupResponse">
+    <part name="IDs"     type="xsd1:ArrayOfString"/>
+  </message>
+
+  <!--  ListIDTypes: () -> array([IDNR:integer,IDName:string]) -->
+  <message name="ListIDTypes"/>
+
+  <message name="ListIDTypesResponse">
+    <part name="IDTypes"     type="xsd1:ListOfIDTypes"/>
+  </message>
+
+  <!--  ListSpecies: () -> array([SpeciesCode:string,TaxonId:integer]) -->
+  <message name="ListSpecies"/>
+
+  <message name="ListSpeciesResponse">
+    <part name="Species"     type="xsd1:ListOfSpecies"/>
+  </message>
+
+  <!--  ListOrthologsBetweenGenomePair: (genome1, genome2, idType) -> array([ID1:string, ID2:string, typ:string, group:integer]) -->
+  <message name="ListOrthologsBetweenGenomePair">
+    <part name="Genome1" type="xsd:string"/>
+    <part name="Genome2" type="xsd:string"/>
+    <part name="IDType1" type="xsd:string"/>
+    <part name="IDType2" type="xsd:string"/>
+  </message>
+
+  <message name="ListOrthologsBetweenGenomePairResponse">
+    <part name="OrthologRelations"  type="xsd1:ListOfOrthologRelations"/>
+  </message>
+  
+  <!--  ListOrthologsInGenome: (idlist, genome1, idOutType) -> array([ID1:string, ID2:string, typ:string, group:integer]) -->
+  <message name="ListOrthologsInGenome">
+    <part name="IDs" type="xsd1:ArrayOfString"/>
+    <part name="genome" type="xsd:string"/>
+    <part name="idtype" type="xsd:string"/>
+  </message>
+
+  <message name="ListOrthologsInGenomeResponse">
+    <part name="OrthologRelations"  type="xsd1:ListOfOrthologRelations"/>
+  </message>
+
+
+  <!-- MapIDs: (InIDs:list(string),OutType:integer) -> (OutIds:list(list(string))) -->
+  <message name="MapIDs">
+    <part name="InIDs" type="xsd1:ArrayOfString"/>
+    <part name="OutType" type="xsd:integer"/>
+  </message>
+
+  <message name="MapIDsResponse">
+    <part name="OutIDs"     type="xsd1:ArrayOfArrayOfString"/>
+  </message>
+
+
+  <!-- Port: Function headers -->
+
+<portType name="OMAPortType">
+
+    <operation name="TestOrthology">
+<documentation>
+Test the orthology relationship between two entries. Possible answers are 'not orthologous', 
+'1:1 orthologs', '1:many orthologs' or 'many:1 orthologs'.
+The two parameters are preferably OMA entry identifiers (e.g. ECOLI1190). Many other
+IDs are also supported (e.g. Ensembl protein/gene identifiers, SwissProt IDs, etc.) whenever
+they were annotated in the original databases.
+</documentation>
+      <input message="tns:TestOrthology"/>
+      <output message="tns:TestOrthologyResponse"/>
+    </operation>
+
+    <operation name="ListOrthologs">
+<documentation>
+Lists all orthologs for a given entry. To learn more about the exact relationship
+to the returned entries, use the TestOrthology function. To get more information,
+specifically the protein sequence and the organism, use the GetEntry function.
+The argument is preferably an OMA entry identifier (e.g. ECOLI1190). Many other
+IDs are also supported (e.g. Ensembl protein/gene identifiers, SwissProt IDs, etc.),
+whenever they were annotated in the original databases.
+</documentation>
+      <input message="tns:ListOrthologs"/>
+      <output message="tns:ListOrthologsResponse"/>
+    </operation>
+
+    <operation name="GetOMAGroup">
+<documentation>
+For any OMA group, this function returns a list IDs of all 
+member proteins.
+</documentation>
+      <input message="tns:GetOMAGroup"/>
+      <output message="tns:GetOMAGroupResponse"/>
+    </operation>
+
+<operation name="GetEntry">
+  <documentation> Given an OMA entry identifier or another ID, this functions
+  lists all possible IDs and cross-references for this entry that were found in
+  the original database.  Also returned are the protein sequence, the OMA group,
+  the organism name and chromosome and locus.</documentation>
+   <input message="tns:GetEntry" name="GetEntry"/>
+   <output message="tns:GetEntryResponse" name="GetEntryResponse"/>
+</operation>
+
+    <operation name="IdentifySequence">
+<documentation>
+This function provides an easy way to map any sequence to the OMA
+entries by searching the input protein sequence in the OMA database.
+A list of all entries that contain this sequence is returned.
+</documentation>
+      <input message="tns:IdentifySequence"/>
+      <output message="tns:IdentifySequenceResponse"/>
+    </operation>
+
+    <operation name="GetMatrixInfo">
+<documentation>
+This function returns the name of the current data set as well as
+the number of species and OMA groups in this data set.
+</documentation>
+      <input message="tns:GetMatrixInfo"/>
+      <output message="tns:GetMatrixInfoResponse"/>
+    </operation>
+
+<operation name="ListIDTypes">
+<documentation>
+Get the list of ID types, which is of the form
+[[0,"OMA ID"], [1,"SwissProt ID"], ...].
+</documentation>
+      <input message="tns:ListIDTypes"/>
+      <output message="tns:ListIDTypesResponse"/>
+    </operation>
+
+<operation name="ListSpecies">
+<documentation>
+Get the list of species covered by OMA in the form of 
+[SpeciesCodes, TaxonId], defined by UniProt and NCBI respectively.
+[["HUMAN",9606],...]. This list is does not have any particular sorting.
+</documentation>
+      <input message="tns:ListSpecies" name="ListSpecies"/>
+      <output message="tns:ListSpeciesResponse" name="ListSpeciesResponse"/>
+    </operation>
+
+
+<operation name="ListOrthologsBetweenGenomePair">
+<documentation>
+Get the list of orthologs between two genomes.
+The result consists of the pair of IDs (according to requested type),
+the type of orthology (1:1 orthologs, ...) and the OMA group they belong, 
+if they are members of the same group (otherwise -1 is returned).
+</documentation>
+      <input message="tns:ListOrthologsBetweenGenomePair" name="ListOrthologsBetweenGenomePair"/>
+      <output message="tns:ListOrthologsBetweenGenomePairResponse" name="ListOrthologsBetweenGenomePairResponse"/>
+    </operation>
+
+<operation name="ListOrthologsInGenome">
+<documentation>
+Get for a list of genes all its orthologs in a given target genomes.
+The query genes do not need to belong to the same species. 
+The result consists of the pair of IDs (according to requested type),
+the type of orthology (1:1 orthologs, ...) and the OMA group they belong, 
+if they are members of the same group (otherwise -1 is returned).
+</documentation>
+      <input message="tns:ListOrthologsInGenome" name="ListOrthologsInGenome"/>
+      <output message="tns:ListOrthologsInGenomeResponse" name="ListOrthologsInGenomeResponse"/>
+    </operation>
+
+
+<operation name="MapIDs">
+<documentation>
+Map a list of IDs (of any type) to a IDs of a specified type.
+Use the ListIDType command to obtain a list of possible ID types
+</documentation>
+      <input message="tns:MapIDs" name="MapIDs"/>
+      <output message="tns:MapIDsResponse" name="MapIDsResponse"/>
+    </operation>
+
+  </portType>
+
+
+  <!-- Binding: more about function headers (?) -->
+
+  <binding name="OMABinding" type="tns:OMAPortType">
+    <soap:binding style="rpc"
+                  transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="TestOrthology">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="GetMatrixInfo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="ListOrthologs">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="GetEntry">
+      <soap:operation soapAction=""/>
+      <input name="GetEntry">
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output name="GetEntryResponse">
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+    
+    <operation name="IdentifySequence">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="GetOMAGroup">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="ListIDTypes">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="ListSpecies">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="ListOrthologsBetweenGenomePair">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="ListOrthologsInGenome">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+
+    <operation name="MapIDs">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded"
+                   namespace="tns:OMA"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+  </binding>
+
+  <!-- Endpoint for OMA API -->
+  <service name="OMA">
+    <documentation>SOAP interface for the OMA Browser at 
+    http://omabrowser.org</documentation>
+    <port name="OMAPort" binding="tns:OMABinding">
+      <soap:address location="http://omabrowser.org/cgi-bin/soap.pl"/>
+    </port>
+  </service>
+
+</definitions>
